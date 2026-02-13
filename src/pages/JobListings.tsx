@@ -1,7 +1,10 @@
 import React from 'react';
 import { Box, Container, Typography, Grid, Paper, Chip, Button } from '@mui/material';
 import { useJobPortals } from '../contexts/JobPortalsContext';
+import { useJobFilters } from '../contexts/JobFiltersContext';
 import { Link as RouterLink } from 'react-router-dom';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { subDays, subMonths } from 'date-fns';
 
 const mockJobs = [
   {
@@ -12,6 +15,7 @@ const mockJobs = [
     match: 92,
     skills: ['React', 'TypeScript', 'Material-UI'],
     portal: 'LinkedIn',
+    postedDate: subDays(new Date(), 2),
   },
   {
     id: 2,
@@ -21,6 +25,7 @@ const mockJobs = [
     match: 85,
     skills: ['React', 'Node.js', 'MongoDB'],
     portal: 'Indeed',
+    postedDate: subDays(new Date(), 10),
   },
   {
     id: 3,
@@ -30,6 +35,7 @@ const mockJobs = [
     match: 78,
     skills: ['Figma', 'Sketch', 'Adobe XD'],
     portal: 'Glassdoor',
+    postedDate: subMonths(new Date(), 2),
   },
   {
     id: 4,
@@ -39,6 +45,7 @@ const mockJobs = [
     match: 88,
     skills: ['Agile', 'Scrum', 'JIRA'],
     portal: 'Monster',
+    postedDate: subMonths(new Date(), 3),
   },
   {
     id: 5,
@@ -48,6 +55,7 @@ const mockJobs = [
     match: 95,
     skills: ['Python', 'R', 'Machine Learning'],
     portal: 'LinkedIn',
+    postedDate: subMonths(new Date(), 4),
   },
   {
     id: 6,
@@ -57,6 +65,7 @@ const mockJobs = [
     match: 89,
     skills: ['AWS', 'Docker', 'Kubernetes'],
     portal: 'Indeed',
+    postedDate: subMonths(new Date(), 5),
   },
   {
     id: 7,
@@ -66,21 +75,45 @@ const mockJobs = [
     match: 80,
     skills: ['Node.js', 'Express', 'PostgreSQL'],
     portal: 'Glassdoor',
+    postedDate: subMonths(new Date(), 7),
   },
 ];
 
 const JobListings: React.FC = () => {
   const { selectedPortals } = useJobPortals();
+  const { startDate, endDate, setStartDate, setEndDate } = useJobFilters();
 
-  const filteredJobs = selectedPortals.length > 0
+  const filteredByPortal = selectedPortals.length > 0
     ? mockJobs.filter((job) => selectedPortals.includes(job.portal))
     : mockJobs;
+
+  const filteredJobs = filteredByPortal.filter(job => {
+    const postedDate = new Date(job.postedDate);
+    return postedDate >= startDate && postedDate <= endDate;
+  });
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ fontWeight: 'bold' }}>
         Job Recommendations
       </Typography>
+
+      <Grid container spacing={2} sx={{ mb: 4 }} alignItems="center" justifyContent="center">
+        <Grid item>
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(newValue) => setStartDate(newValue || new Date())}
+          />
+        </Grid>
+        <Grid item>
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(newValue) => setEndDate(newValue || new Date())}
+          />
+        </Grid>
+      </Grid>
 
       {selectedPortals.length > 0 && (
         <Typography variant="subtitle1" align="center" sx={{ mb: 3 }}>
@@ -98,9 +131,9 @@ const JobListings: React.FC = () => {
         </Typography>
       )}
 
-      {filteredJobs.length === 0 && selectedPortals.length > 0 ? (
+      {filteredJobs.length === 0 ? (
         <Typography variant="h6" align="center" color="text.secondary" sx={{ my: 4 }}>
-          No job listings found for the selected portals.
+          No job listings found for the selected criteria.
         </Typography>
       ) : (
         <Grid container spacing={4}>
@@ -139,4 +172,3 @@ const JobListings: React.FC = () => {
 };
 
 export default JobListings;
-

@@ -9,23 +9,30 @@ import JobPortals from './pages/JobPortals';
 import Layout from './layouts/Layout';
 import theme from './theme';
 import { JobPortalsProvider } from './contexts/JobPortalsContext';
+import { JobFiltersProvider } from './contexts/JobFiltersContext';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <JobPortalsProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/jobs" element={<JobListings />} />
-              <Route path="/resume" an element={<ResumeAnalysis />} />
-              <Route path="/job-portals" element={<JobPortals />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </JobPortalsProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <JobPortalsProvider>
+          <JobFiltersProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/jobs" element={<JobListings />} />
+                  <Route path="/resume" an element={<ResumeAnalysis />} />
+                  <Route path="/job-portals" element={<JobPortals />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </JobFiltersProvider>
+        </JobPortalsProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };

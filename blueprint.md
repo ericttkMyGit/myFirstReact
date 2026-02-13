@@ -35,25 +35,31 @@ This blueprint outlines the development of the Job Matcher application, focusing
   - A new React Context (`JobPortalsContext`) has been created to manage the `selectedPortals` state globally.
   - `JobPortalsProvider` wraps the main application routes in `App.tsx`, making `selectedPortals` and `setSelectedPortals` accessible throughout the application.
   - `useJobPortals` custom hook simplifies consuming the context in child components.
+
+### New Feature: Date Range Filter
+- **Date Range Picker (`src/pages/JobListings.tsx`):**
+  - A date range picker has been added to the `JobListings` page using `@mui/x-date-pickers`.
+  - Users can select a start and end date to filter job postings.
+  - The default date range is set to the last six months.
+- **State Management with Context (`src/contexts/JobFiltersContext.tsx`):**
+  - A new React Context (`JobFiltersContext`) has been created to manage the `startDate` and `endDate` state globally.
+  - `JobFiltersProvider` wraps the main application routes in `App.tsx`, making the date range state accessible throughout the application.
+  - `useJobFilters` custom hook simplifies consuming the context in child components.
 - **Job Listings Filtering (`src/pages/JobListings.tsx`):**
-  - The `JobListings` page now consumes the `JobPortalsContext` to access the `selectedPortals`.
-  - Mock job data has been updated to include a `portal` field for each job listing.
-  - Job listings are dynamically filtered based on the user's `selectedPortals`.
-  - If no portals are selected, all mock jobs are displayed.
-  - Clear messages are shown to the user:
-    - Indicating which portals are currently being used for filtering.
-    - Prompting the user to select portals if none are chosen.
-    - Informing the user if no job listings match the selected portals.
+  - The `JobListings` page now consumes both `JobPortalsContext` and `JobFiltersContext`.
+  - Mock job data has been updated to include a `postedDate` field for each job listing.
+  - Job listings are dynamically filtered based on both the user's `selectedPortals` and the selected date range.
 
 ## Current Plan and Next Steps
 
-All requested features (visual design enhancement and job portal selection) have been implemented. The application now features a modern UI, global state management for job portal selection, and dynamic filtering of job listings.
+All requested features (visual design enhancement, job portal selection, and date range filter) have been implemented. The application now features a modern UI, global state management for job portal selection, and dynamic filtering of job listings.
 
 ### User Interaction with New Feature:
 1.  **Navigate to "Job Portals":** Click on the "Job Portals" link in the navigation bar.
 2.  **Select Portals:** On the "Select Job Portals" page, choose up to 10 job portals using the checkboxes.
 3.  **Confirm Selection:** Click the "Confirm Selection" button. An alert will confirm your choices, and the selected portals will be displayed below.
-4.  **View Filtered Listings:** Navigate to the "Job Listings" page. You will see the job recommendations filtered based on your selections. If no portals were selected, all mock jobs will be shown. If selected portals yield no matches, a corresponding message will appear.
+4.  **View Filtered Listings:** Navigate to the "Job Listings" page. You will see the job recommendations.
+5.  **Filter by Date:** Use the date pickers at the top of the "Job Listings" page to select a start and end date. The job listings will automatically update to show only the jobs posted within that range.
 
 ### Regarding the MCP Server:
 You previously mentioned "connect to https://server.smithery.ai/@upstash/context7-mcp". My current setup and tools are configured to integrate with Firebase MCP as described in the `GEMINI.md` file (by adding a configuration to `.idx/mcp.json`). I do not currently have the capability to directly "connect" to an arbitrary external MCP server URL in the way you might be expecting for real-time code review or updates.
